@@ -2,46 +2,41 @@ package main
 
 import (
 	"fmt"
-	"sync"
 	"time"
 )
 
-func worker(id int, jobs <-chan int, results chan<- int) {
-	for job := range jobs {
-		fmt.Printf("Worker started %d job %d \n", id, job)
-		time.Sleep(time.Second)
-		fmt.Printf("Worker %d finished %d \n", id, job)
-		results <- job * 2
+type Task struct {
+	id int
+}
+
+func worker(id int, jobs <-chan Task, result chan<- string) {
+	for task := range jobs {
+		fmt.Printf("Worker  %d started task %d\n", id, task.id)
+		time.Sleep(time.Second) // simulate time-consuming
+		fmt.Printf("Worker %d finished task %d", id, task.id)
+		result <- fmt.Sprintf("Task %d done by worker %d", task.id, id)
 	}
 }
 
 func main() {
-	const numJobs = 5
-	const numWorkers = 3
+	numWorkers := 3
+	numJobs := 5
 
-	jobs := make(chan int, numJobs)
-	results := make(chan int, numJobs) // no of jobs that many results
+	jobs := make(chan Task, numJobs)
+	results := make(chan string, numJobs)
 
-	var wg sync.WaitGroup
-	// First start the workers and the send then assign the jobs
-	for j := 1; j <= numWorkers; j++ {
-		wg.Add(1)
-		go worker(j, jobs, results)
+	for w := 1; w <= numWorkers; w++ {
+		go worker(w, jobs, results)
 	}
 
+	// Send jobs to workers
 	for j := 1; j <= numJobs; j++ {
-		jobs <- j
+		jobs <- Task{id: j}
 	}
-
 	close(jobs)
 
-	wg.Wait()
-
-	close(results)
-
-	// Collect results
-	for r := 1; r <= numJobs; r++ {
-		fmt.Println("Result:", <-results)
+	for j := 1; j <= numJobs; j++ {
+		fmt.Println(<-results)
 	}
 
 }
