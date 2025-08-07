@@ -2,51 +2,49 @@ package main
 
 import (
 	"fmt"
-	"sync"
 	"time"
 )
 
-func sendNumbers(nums []int, ch chan<- int) {
-	for _, num := range nums {
-		time.Sleep(time.Millisecond * 100)
-		ch <- num
-	}
-
-	close(ch) // close the channel
-}
-
-func FanIn(ch1, ch2 <-chan int, out chan<- int) {
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	readChannel := func(ch <-chan int) {
-		for num := range ch {
-			out <- num
-		}
-		wg.Done()
-	}
-
-	go readChannel(ch1)
-	go readChannel(ch2)
+func generate(msg string) <-chan string {
+	ch := make(chan string)
 
 	go func() {
-		wg.Wait()
-		close(out)
+		for i := 0; ; i++ {
+			ch <- fmt.Sprintf("%s %d", msg, i)
+			time.Sleep(time.Millisecond * 500)
+		}
 	}()
+
+	return ch
+}
+
+func fanIn(input1, input2 <-chan string) <-chan string {
+	out := make(chan string)
+
+	go func() {
+		for {
+			out <- <-input1
+		}
+	}()
+
+	go func() {
+		for {
+			out <- <-input2
+		}
+	}()
+
+	return out
 }
 
 func main() {
-	ch1 := make(chan int)
-	ch2 := make(chan int)
-	out := make(chan int)
 
-	go sendNumbers([]int{1, 2, 3}, ch1)
-	go sendNumbers([]int{4, 5, 6}, ch2)
+	ch1 := generate("Apple")
+	ch2 := generate("Banana")
 
-	go FanIn(ch1, ch2, out)
+	combined := fanIn(ch1, ch2)
 
-	for num := range out {
-		fmt.Println("Numbers ", num)
+	for i := 0; i < 10; i++ {
+		fmt.Println(<-combined)
 	}
 
 }
