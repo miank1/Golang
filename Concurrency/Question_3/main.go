@@ -1,3 +1,13 @@
+// You have two writer goroutines, each writing numbers into the same channel.
+
+// First goroutine writes 1 to 5.
+
+// Second goroutine writes 6 to 10.
+
+// A reader goroutine should read and print numbers until all are done.
+
+// ⚠️ Hint: You’ll need to think about when to close the channel so the reader exits properly.
+
 package main
 
 import (
