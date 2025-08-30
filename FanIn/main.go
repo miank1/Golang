@@ -2,35 +2,37 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"sync"
 )
 
-func generate(msg string) <-chan string {
-	ch := make(chan string)
-
+func generate(start, end int) <-chan int {
+	ch := make(chan int)
 	go func() {
-		for i := 0; ; i++ {
-			ch <- fmt.Sprintf("%s %d", msg, i)
-			time.Sleep(time.Millisecond * 500)
+		for i := start; i <= end; i++ {
+			ch <- i
 		}
+		close(ch)
 	}()
-
 	return ch
 }
 
-func fanIn(input1, input2 <-chan string) <-chan string {
+func fanIn(channels ...<-chan int) <-chan int {
 	out := make(chan string)
+	var wg sync.WaitGroup
+
+	for _, ch := range channels {
+		wg.Add(1)
+		go func(c <-chan int) {
+			defer wg.Done()
+			for val := range c {
+				out <- val
+			}
+		}(ch)
+	}
 
 	go func() {
-		for {
-			out <- <-input1
-		}
-	}()
-
-	go func() {
-		for {
-			out <- <-input2
-		}
+		wg.Wait()
+		close(out)
 	}()
 
 	return out
@@ -38,8 +40,9 @@ func fanIn(input1, input2 <-chan string) <-chan string {
 
 func main() {
 
-	ch1 := generate("Apple")
-	ch2 := generate("Banana")
+	ch1 := generator(1, 5)
+	ch2 := generator(6, 10)
+	ch3 := generator(11, 15)
 
 	combined := fanIn(ch1, ch2)
 
