@@ -1,4 +1,4 @@
-// Fan In - Concurrency Pattern
+// Fan In - Concurrency Pattern question
 
 package main
 
