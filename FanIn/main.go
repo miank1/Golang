@@ -17,7 +17,7 @@ func generate(start, end int) <-chan int {
 }
 
 func fanIn(channels ...<-chan int) <-chan int {
-	out := make(chan string)
+	out := make(chan int)
 	var wg sync.WaitGroup
 
 	for _, ch := range channels {
@@ -40,13 +40,13 @@ func fanIn(channels ...<-chan int) <-chan int {
 
 func main() {
 
-	ch1 := generator(1, 5)
-	ch2 := generator(6, 10)
-	ch3 := generator(11, 15)
+	ch1 := generate(1, 5)
+	ch2 := generate(6, 10)
+	ch3 := generate(11, 15)
 
-	combined := fanIn(ch1, ch2)
+	combined := fanIn(ch1, ch2, ch3)
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 15; i++ {
 		fmt.Println(<-combined)
 	}
 
