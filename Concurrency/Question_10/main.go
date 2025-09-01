@@ -1,3 +1,4 @@
+// Generate squares and print them - pipeline
 package main
 
 import (
