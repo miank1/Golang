@@ -25,6 +25,22 @@ func (r Rectangle) Area() float64 {
 	return r.length * r.width
 }
 
+type CirclePtr struct {
+	radius float64
+}
+
+type RectanglePtr struct {
+	length, width float64
+}
+
+func (c *CirclePtr) Area() float64 { // pointer receiver
+	return 3.14 * c.radius * c.radius
+}
+
+func (r *RectanglePtr) Area() float64 { // pointer receiver
+	return r.length * r.width
+}
+
 func TotalArea(shapes []Shape) float64 {
 	total := 0.0
 	for _, s := range shapes {
@@ -42,6 +58,13 @@ func main() {
 
 	shapes = append(shapes, circle)
 	shapes = append(shapes, rectangle)
+
+	// Using pointer receivers
+	shapes2 := []Shape{
+		&CirclePtr{5},
+		&RectanglePtr{2, 4}}
+
+	fmt.Println("Total Area with pointer receivers:", TotalArea(shapes2))
 
 	fmt.Println("Total Area :", TotalArea(shapes))
 
