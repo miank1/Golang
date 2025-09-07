@@ -26,3 +26,7 @@ func main() {
 	d.Animal.Speak()
 	makeItSpeak(d.Animal)
 }
+
+func Test(){
+	
+}
