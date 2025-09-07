@@ -2,9 +2,15 @@ package main
 
 import "fmt"
 
+type Address struct {
+	City    string
+	Country string
+}
+
 type Person struct {
 	Name string
 	Age  int
+	Address
 }
 
 func (p *Person) Greet() {
@@ -20,10 +26,14 @@ func main() {
 	p := Person{
 		Name: "Alen",
 		Age:  24,
+		Address: Address{
+			City:    "Newyork",
+			Country: "USA",
+		},
 	}
 
 	fmt.Println(p)
-	fmt.Println("Name and Age ->", p.Name, p.Age)
+	fmt.Println("Name and Age and City ->", p.Name, p.Age, p.City)
 
 	p.Age = 25
 	fmt.Println("Name and Age ->", p.Name, p.Age)
