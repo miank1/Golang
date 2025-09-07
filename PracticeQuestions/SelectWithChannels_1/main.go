@@ -20,7 +20,7 @@ func main() {
 	ch1 := make(chan string)
 	ch2 := make(chan string)
 
-	// first goroutine
+	// first goroutine sending "ping"
 	go func() {
 		for {
 			ch1 <- "ping"
@@ -28,7 +28,7 @@ func main() {
 		}
 	}()
 
-	// second goroutine
+	// second goroutine sending "pong"
 	go func() {
 		for {
 			ch2 <- "pong"

@@ -18,6 +18,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	// Receive the result from the channel
 	result := <-ch
 	w.Write([]byte(result))
+	close(ch)
 }
 func main() {
 	http.HandleFunc("/hello", hello)
