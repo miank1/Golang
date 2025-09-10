@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 type Address struct {
 	City    string
@@ -13,6 +16,11 @@ type Person struct {
 	Address
 }
 
+type Employee struct {
+	Person
+	Position string
+}
+
 func (p *Person) Greet() {
 	fmt.Printf("Hello, my name is  %s and I am %d years old \n", p.Name, p.Age)
 }
@@ -22,30 +30,55 @@ func (p *Person) HaveBirthday() {
 	p.Age++ // increase age by 1
 }
 
+func (a *Address) Greet() {
+	fmt.Printf("I live in %s, %s", a.City, a.Country)
+}
+
+type Describable interface {
+	Describe() string
+}
+
+func (a *Address) Describe() string {
+	return "Address: " + a.City + "," + a.Country
+}
+
+func (p *Person) Describe() string {
+	return "Person: " + p.Name + "," + strconv.Itoa(p.Age)
+}
+
+func (e *Employee) Describe() string {
+	return "Employee: " + e.Person.Name + "," + "Age: " + strconv.Itoa(e.Person.Age) + "," + "Position:" + e.Position + "," + "City: " + e.Person.City
+}
+
 func main() {
-	p := Person{
-		Name: "Alen",
-		Age:  24,
+	// Create instances
+	p := &Person{
+		Name: "Alice",
+		Age:  25,
 		Address: Address{
 			City:    "Newyork",
 			Country: "USA",
 		},
 	}
 
-	fmt.Println(p)
-	fmt.Println("Name and Age and City ->", p.Name, p.Age, p.City)
+	a := &Address{City: "Berlin", Country: "Germany"}
 
-	p.Age = 25
-	fmt.Println("Name and Age ->", p.Name, p.Age)
+	e := &Employee{
+		Person: Person{
+			Name: "Bob",
+			Age:  30,
+			Address: Address{
+				City:    "London",
+				Country: "UK",
+			},
+		},
+		Position: "Engineer",
+	}
 
-	ptr := &p
+	// Polymorphism in action
+	things := []Describable{p, a, e}
 
-	ptr.Name = "Alice"
-
-	fmt.Println(p)
-	fmt.Println(ptr.Name)
-
-	p.Greet()
-	p.HaveBirthday() // increments age
-	p.Greet()
+	for _, t := range things {
+		fmt.Println(t.Describe())
+	}
 }
