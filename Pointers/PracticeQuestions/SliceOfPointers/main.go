@@ -13,6 +13,6 @@ func main() {
 		&Employee{Name: "Alice", Salary: 1000},
 	}
 
-	fmt.Println(employee)
+	fmt.Println("Employee ", employee) 
 
 }
