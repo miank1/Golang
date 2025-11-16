@@ -22,24 +22,25 @@ func main() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"test_queue", // name
-		false,        // durable
-		false,        // delete when unused
-		false,        // exclusive
-		false,        // no-wait
-		nil,          // arguments
+		"order_queue", // name
+		true,          // durable
+		false,         // delete when unused
+		false,         // exclusive
+		false,         // no-wait
+		nil,           // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 
-	body := "Hello from Golang!"
+	body := "Order Created: #12345"
 	err = ch.Publish(
 		"",     // exchange
 		q.Name, // routing key (queue name)
 		false,
 		false,
 		amqp091.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(body),
+			DeliveryMode: amqp091.Persistent,
+			ContentType:  "text/plain",
+			Body:         []byte(body),
 		})
 
 	failOnError(err, "Failed to publish a message")

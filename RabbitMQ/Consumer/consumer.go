@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/rabbitmq/amqp091-go"
 )
@@ -19,10 +20,12 @@ func main() {
 	}
 	defer ch.Close()
 
+	ch.Qos(1, 0, false)
+
 	msgs, err := ch.Consume(
-		"test_queue",
+		"order_queue",
 		"",
-		true,
+		false, //  auto-ack disabled
 		false,
 		false,
 		false,
@@ -32,8 +35,22 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("🚀 Waiting for messages...")
-	for m := range msgs {
-		log.Printf("📩 Received: %s", m.Body)
+	log.Println("🚀 Worker is waiting for messages...")
+
+	for d := range msgs {
+		log.Printf("📦 Processing: %s", d.Body)
+
+		// simulate slow processing
+		time.Sleep(2 * time.Second)
+
+		// ⭐ success → acknowledge
+		if string(d.Body) != "fail" {
+			d.Ack(false)
+			log.Println("✔ ACK sent")
+		} else {
+			// ⭐ failure → send back to queue
+			d.Nack(false, true)
+			log.Println("❌ NACK sent — message requeued")
+		}
 	}
 }
