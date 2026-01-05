@@ -8,6 +8,9 @@ func main() {
 		if i == 3 {
 			continue
 		}
+		if i == 4 {
+			break
+		}
 		fmt.Println(i)
 	}
 
