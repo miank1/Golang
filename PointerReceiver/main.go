@@ -2,30 +2,18 @@ package main
 
 import "fmt"
 
-type animal interface {
-	breathe()
-	walk()
+type User struct {
+	Name string
 }
 
-type lion struct {
-	age int
-}
-
-func (l *lion) breathe() {
-	fmt.Println("Lion Breathes")
-}
-
-func (l *lion) walk() {
-	fmt.Println("Lion Walks")
+func (u *User) SetName(name string) {
+	u.Name = name
 }
 
 func main() {
-	var a animal
-	a = &lion{
-		age: 5,
+	u := User{
+		Name: "Ankit",
 	}
-
-	a.breathe()
-	a.walk()
-
+	u.SetName("Rahul")
+	fmt.Println(u)
 }
