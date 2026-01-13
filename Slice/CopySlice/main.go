@@ -20,4 +20,11 @@ func main() {
 	fmt.Println(s1) // [1 2 3 4]
 	fmt.Println(s2) // [100 2 3 4]
 
+	src := []int{1, 2, 3}
+	dst := make([]int, 1)
+
+	n := copy(dst, src)
+
+	fmt.Println(n, dst)
+
 }
