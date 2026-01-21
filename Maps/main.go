@@ -1,98 +1,41 @@
 package main
 
-import (
-	"encoding/json"
-	"fmt"
-)
+import "fmt"
 
 func main() {
 
-	// creating a map
-	sample := map[string]string{
-		"a": "x",
-		"b": "y",
+	m1 := make(map[string]int) // m1 ready to use not a nil map
+	fmt.Println("m1 ", m1 == nil)
+
+	m2 := map[string]int{
+		"apple":  10,
+		"banana": 20,
 	}
 
-	fmt.Println(sample)
-	for k, v := range sample {
-		fmt.Printf("Key : %s value : %s\n", k, v)
+	// read from map
+
+	fmt.Println("m2 :", m2["apple"])
+
+	// iterate over the map
+
+	for k, v := range m2 {
+		fmt.Println(k, v)
 	}
 
-	// Looping throught keys
-	for k := range sample {
-		fmt.Printf("Key :%s\n", k)
+	// safe read
+
+	v, ok := m2["apple"]
+
+	if ok {
+		fmt.Println("Apple Value", v)
 	}
 
-	// Looping throught values
-	for _, v := range sample {
-		fmt.Printf("value: %s\n", v)
-	}
+	// maps are Reference Types
+	m3 := make(map[string]int)
 
-	keys := getAllKeys(sample)
-	fmt.Println(keys)
+	m4 := m3
 
-	// length of the map
-	employeeSalary := make(map[string]int)
-	employeeSalary["Tom"] = 2000
-	employeeSalary["Sam"] = 1200
+	m4["a"] = 1
+	fmt.Println(m3["a"]) // 1
 
-	for k1, v1 := range employeeSalary {
-		fmt.Printf("Employee Name %s and Salary is %d \n", k1, v1)
-	}
-
-	lenOfMap := len(employeeSalary)
-	fmt.Println("Length of map is ", lenOfMap)
-
-	// Check If key exist
-	fmt.Println("Key exists case")
-	val, ok := employeeSalary["Tom"]
-	fmt.Printf("Val: %d, ok: %t\n", val, ok)
-
-	fmt.Println("Key doesn't exists case")
-
-	val, ok = employeeSalary["Sam"]
-	fmt.Printf("Val: %d, ok: %t\n", val, ok)
-
-	m1 := map[string]int{}
-	fmt.Println(m1)
-
-	m2 := make(map[string]string)
-	fmt.Println(m2)
-
-	// Creating a nil map
-	var employeeSalary1 map[string]int
-	fmt.Println(employeeSalary1)
-	// This will panic as we are trying to create
-	// employeeSalary1["Tom"] = 2000
-
-	// Maps to JSON
-	a := make(map[int]string)
-	a[1] = "John"
-	j, err := json.Marshal(a)
-	if err != nil {
-		fmt.Printf("Error : %s", err.Error())
-	} else {
-		fmt.Println(string(j))
-	}
-
-	// Unmarshall json to map
-	// var b map[int]string
-	// json.Unmarshal(j, &b)
-	// fmt.Println(b)
-
-	// Converting json to map
-	j1 := `{"1": "JOHN"}`
-	var b1 map[string]string
-	json.Unmarshal([]byte(j1), &b1)
-	fmt.Println(m2)
-
-}
-
-func getAllKeys(sample map[string]string) []string {
-	var keys []string
-	for k := range sample {
-		keys = append(keys, k)
-	}
-
-	return keys
 }
