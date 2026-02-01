@@ -31,7 +31,7 @@ func main() {
 	go Ping(ch, &wg)
 	go Pong(ch, &wg)
 
-	//ch <- 1
+	ch <- 1
 
 	wg.Wait()
 	close(ch)
