@@ -24,6 +24,7 @@ This repo is my learning ground — from basics to advanced concepts like concur
 | 8 | `08-strings-text/` | Strings, runes, manipulation, algorithms |
 | 9 | `09-generics/` | Generics |
 | 10 | `10-design-patterns/` | Factory, Singleton, Repository pattern |
+| | `exercises/` | variables, maps, slice, pointers, concurrency (topic-wise) |
 
 ---
 
