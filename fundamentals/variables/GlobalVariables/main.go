@@ -1,3 +1,4 @@
+// FIXME: Wrong import path - update to hello/fundamentals/variables/GlobalVariables/util after restructure
 package main
 
 import (

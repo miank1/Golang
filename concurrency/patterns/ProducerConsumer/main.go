@@ -37,5 +37,4 @@ func main() {
 	go Consumer(ch, &wg)
 
 	wg.Wait()
-	//close(ch)
 }

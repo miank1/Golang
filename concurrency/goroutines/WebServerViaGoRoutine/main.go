@@ -18,7 +18,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	// Receive the result from the channel
 	result := <-ch
 	w.Write([]byte(result))
-	close(ch)
+	close(ch) // CLEANUP: Redundant - channel goes out of scope, no other goroutine ranges over it
 }
 func main() {
 	http.HandleFunc("/hello", hello)

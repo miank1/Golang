@@ -7,5 +7,5 @@ type Person struct {
 }
 
 func SayHello() {
-	fmt.Println("Hello from anothe package")
+	fmt.Println("Hello from anothe package") // CLEANUP: typo - "anothe" -> "another"
 }
