@@ -1,4 +1,4 @@
-// FIXME: Wrong import path - update to hello/fundamentals/basics/PackageImport after restructure
+// FIXME: Wrong import path - update to hello/01-fundamentals/basics/PackageImport after restructure
 package main
 
 import (
