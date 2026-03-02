@@ -1,55 +1,35 @@
 package main
 
-import "fmt"
+func merge(ch1, ch2 <-chan int) <-chan int {
 
-func func1(ch chan<- int) {
-	for i := 1; i <= 5; i++ {
-		ch <- i
-	}
-
-	close(ch)
-}
-
-func func2(ch chan<- int) {
-	for i := 1; i <= 5; i++ {
-		ch <- i * 10
-	}
-	close(ch)
-}
-
-func mergeChannels(ch1, ch2 <-chan int) <-chan int {
-
-	out := make(chan int)
+	result := make(chan int, 1)
 
 	go func() {
-		for val := range ch1 {
-			out <- val
+		defer close(result)
+
+		for ch1 != nil || ch2 != nil {
+			select {
+			case v, ok := <-ch1:
+				if !ok {
+					ch1 = nil
+				} else {
+					result <- v
+				}
+			case v, ok := <-ch2:
+				if !ok {
+					ch2 = nil
+				} else {
+					result <- v
+				}
+			}
 		}
 
 	}()
 
-	go func() {
-		for val := range ch2 {
-			out <- val
-		}
+	return result
 
-	}()
-
-	return out
 }
 
 func main() {
-
-	ch1 := make(chan int, 5)
-	ch2 := make(chan int, 5)
-
-	go func1(ch1)
-	go func2(ch2)
-
-	out := mergeChannels(ch1, ch2)
-
-	for i := 1; i <= 10; i++ {
-		fmt.Println(<-out)
-	}
 
 }
