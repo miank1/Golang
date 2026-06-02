@@ -19,7 +19,7 @@ func SendNumber_1(ch chan int, wg *sync.WaitGroup) {
 
 func SendNumber_2(ch chan int, wg *sync.WaitGroup) {
 	defer wg.Done()
-	for i := 4; i < 5; i++ {
+	for i := 4; i <= 5; i++ {
 		ch <- i
 	}
 
@@ -35,12 +35,13 @@ func main() {
 	go SendNumber_1(ch, &wg)
 	go SendNumber_2(ch, &wg)
 
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
 	for x := range ch {
 		fmt.Println(x)
 	}
-
-	wg.Wait()
-
-	close(ch)
 
 }
